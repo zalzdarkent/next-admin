@@ -12,7 +12,7 @@ npm install
 ### 2. Setup Environment
 Copy `.env.local.example` ke `.env` dan sesuaikan:
 ```env
-DATABASE_URL="mysql://root@localhost:3306/starter_admin?authPlugin=mysql_native_password"
+DATABASE_URL="mysql://root@localhost:3306/starter_admin"
 JWT_SECRET="your-super-secret-jwt-key"
 NEXTAUTH_SECRET="your-nextauth-secret"
 NEXTAUTH_URL="http://localhost:3000"

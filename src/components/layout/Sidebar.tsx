@@ -13,6 +13,16 @@ import {
   User,
   ChevronUp,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -34,6 +44,7 @@ export default function Sidebar({
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   // Use isOpen prop if provided, otherwise use internal state
   const sidebarOpen = isOpen !== undefined ? isOpen : isMobileMenuOpen;
@@ -57,6 +68,16 @@ export default function Sidebar({
     } catch (error) {
       console.error("Logout error:", error);
     }
+  };
+
+  const handleLogoutClick = () => {
+    setIsUserMenuOpen(false);
+    setShowLogoutDialog(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutDialog(false);
+    handleLogout();
   };
 
   const menuGroups = [
@@ -254,10 +275,7 @@ export default function Sidebar({
                         <hr className="my-1 border-gray-100" />
                         <button
                           className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                          onClick={() => {
-                            setIsUserMenuOpen(false);
-                            handleLogout();
-                          }}
+                          onClick={handleLogoutClick}
                         >
                           <LogOut size={16} className="mr-3 text-gray-500" />
                           Log out
@@ -309,10 +327,7 @@ export default function Sidebar({
                         <hr className="my-1 border-gray-100" />
                         <button
                           className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                          onClick={() => {
-                            setIsUserMenuOpen(false);
-                            handleLogout();
-                          }}
+                          onClick={handleLogoutClick}
                         >
                           <LogOut size={16} className="mr-3 text-gray-500" />
                           Log out
@@ -326,6 +341,24 @@ export default function Sidebar({
           </div>
         </div>
       </div>
+
+      {/* Logout Confirmation Dialog */}
+      <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Konfirmasi Logout</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin keluar dari akun Anda? Anda perlu login kembali untuk mengakses dashboard.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmLogout} className="bg-red-600 hover:bg-red-700">
+              Ya, Logout
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
