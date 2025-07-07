@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Starter Admin - Simple Admin Dashboard
 
-## Getting Started
+Dashboard admin sederhana dengan autentikasi JWT menggunakan Next.js, Prisma, dan MySQL.
 
-First, run the development server:
+## 🚀 Quick Start
 
+### 1. Install Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Setup Environment
+Copy `.env.local.example` ke `.env` dan sesuaikan:
+```env
+DATABASE_URL="mysql://root@localhost:3306/starter_admin?authPlugin=mysql_native_password"
+JWT_SECRET="your-super-secret-jwt-key"
+NEXTAUTH_SECRET="your-nextauth-secret"
+NEXTAUTH_URL="http://localhost:3000"
+NODE_ENV="development"
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Database Migration
+```bash
+# Buat migration (seperti di Laravel)
+npm run db:migrate
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Atau kalau database sudah ada, reset dulu
+npm run db:reset
+npm run db:migrate
+```
 
-## Learn More
+### 4. Run Development Server
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Buka [http://localhost:3000](http://localhost:3000) dan mulai dengan register user baru.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Next.js 15** dengan TypeScript
+- **Prisma ORM** untuk database (seperti Eloquent di Laravel)
+- **MySQL** sebagai database
+- **JWT** untuk autentikasi
+- **Shadcn/ui** untuk komponen UI
+- **Tailwind CSS** untuk styling
 
-## Deploy on Vercel
+## 📁 Struktur Folder
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├── app/
+│   ├── api/auth/           # API routes untuk autentikasi
+│   ├── auth/               # Halaman login & register  
+│   ├── dashboard/          # Halaman dashboard (protected)
+│   └── ...
+├── components/
+│   ├── auth/               # Komponen autentikasi
+│   ├── layout/             # Layout components
+│   └── ui/                 # UI components (Shadcn/ui)
+├── lib/
+│   ├── auth/               # JWT utilities
+│   ├── db/                 # Database connection
+│   └── utils.ts
+└── middleware.ts           # Route protection
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔐 Fitur
+
+- ✅ **Register/Login** dengan JWT
+- ✅ **Protected Routes** dengan middleware
+- ✅ **Dashboard** responsive dengan sidebar
+- ✅ **Database Migration** seperti Laravel
+- ✅ **Modern UI** dengan Shadcn/ui
+
+## 🗃️ Database Commands
+
+```bash
+npm run db:migrate          # Buat migration baru
+npm run db:studio          # Buka Prisma Studio (seperti phpMyAdmin)
+npm run db:reset           # Reset database
+npm run db:generate        # Generate Prisma client
+```
+
+## 🚀 Deployment
+
+1. Build project: `npm run build`
+2. Setup database di production
+3. Run migrations: `npm run db:migrate`
+4. Deploy ke Vercel/hosting pilihan
+
+---
+
+**Happy Coding!** 🎉
