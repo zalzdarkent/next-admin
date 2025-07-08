@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Home,
   Settings,
@@ -12,6 +12,8 @@ import {
   LayoutDashboard,
   User,
   ChevronUp,
+  Users,
+  BarChart3,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -42,12 +44,18 @@ export default function Sidebar({
   currentUser,
 }: SidebarProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   // Use isOpen prop if provided, otherwise use internal state
   const sidebarOpen = isOpen !== undefined ? isOpen : isMobileMenuOpen;
+
+  // Function to check if menu item is active
+  const isMenuActive = (href: string) => {
+    return pathname === href;
+  };
 
   const handleMobileToggle = () => {
     if (onMobileToggle) {
@@ -89,6 +97,16 @@ export default function Sidebar({
           icon: Home,
           href: "/dashboard",
         },
+        {
+          title: "Users",
+          icon: Users,
+          href: "/pages/users",
+        },
+        {
+          title: "Reports",
+          icon: BarChart3,
+          href: "/pages/reports",
+        },
       ],
     }
   ];
@@ -116,7 +134,7 @@ export default function Sidebar({
           {/* Logo */}
           <Link
             href="/dashboard"
-            className="flex items-center h-14 px-4 border-b hover:bg-gray-50 transition-colors cursor-pointer"
+            className="flex items-center h-14 px-4 hover:bg-gray-50 transition-colors cursor-pointer"
             onClick={() => {
               if (onMobileToggle && sidebarOpen) {
                 onMobileToggle();
@@ -154,32 +172,45 @@ export default function Sidebar({
 
                 {/* Group Items */}
                 <div className="space-y-1">
-                  {group.items.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`flex items-center px-3 py-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200 ${
-                        isCollapsed ? "justify-center" : ""
-                      }`}
-                      onClick={() => {
-                        if (onMobileToggle && sidebarOpen) {
-                          onMobileToggle();
-                        } else if (!onMobileToggle) {
-                          setIsMobileMenuOpen(false);
-                        }
-                      }}
-                      title={isCollapsed ? item.title : undefined}
-                    >
-                      <item.icon className="w-4 h-4 flex-shrink-0 transition-all duration-300" />
-                      <div
-                        className={`overflow-hidden transition-all duration-300 ${
-                          isCollapsed ? "w-0 ml-0" : "w-full ml-3"
+                  {group.items.map((item) => {
+                    const isActive = isMenuActive(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`flex items-center px-3 py-2.5 text-sm rounded-lg transition-all duration-200 relative ${
+                          isCollapsed ? "justify-center" : ""
+                        } ${
+                          isActive
+                            ? "bg-blue-600 text-white shadow-lg transform scale-[1.02]"
+                            : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                         }`}
+                        onClick={() => {
+                          if (onMobileToggle && sidebarOpen) {
+                            onMobileToggle();
+                          } else if (!onMobileToggle) {
+                            setIsMobileMenuOpen(false);
+                          }
+                        }}
+                        title={isCollapsed ? item.title : undefined}
                       >
-                        <span className="whitespace-nowrap">{item.title}</span>
-                      </div>
-                    </Link>
-                  ))}
+                        {/* Active indicator strip */}
+                        {isActive && (
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full opacity-80"></div>
+                        )}
+                        <item.icon className={`w-4 h-4 flex-shrink-0 transition-all duration-300 ${
+                          isActive ? "text-white" : ""
+                        }`} />
+                        <div
+                          className={`overflow-hidden transition-all duration-300 ${
+                            isCollapsed ? "w-0 ml-0" : "w-full ml-3"
+                          }`}
+                        >
+                          <span className="whitespace-nowrap">{item.title}</span>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -256,7 +287,7 @@ export default function Sidebar({
                           className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => {
                             setIsUserMenuOpen(false);
-                            router.push('/dashboard/account');
+                            router.push('/pages/account');
                           }}
                         >
                           <User size={16} className="mr-3 text-gray-500" />
@@ -266,7 +297,7 @@ export default function Sidebar({
                           className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => {
                             setIsUserMenuOpen(false);
-                            router.push('/dashboard/settings');
+                            router.push('/pages/settings');
                           }}
                         >
                           <Settings size={16} className="mr-3 text-gray-500" />
@@ -308,7 +339,7 @@ export default function Sidebar({
                           className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => {
                             setIsUserMenuOpen(false);
-                            router.push('/dashboard/account');
+                            router.push('/pages/account');
                           }}
                         >
                           <User size={16} className="mr-3 text-gray-500" />
@@ -318,7 +349,7 @@ export default function Sidebar({
                           className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => {
                             setIsUserMenuOpen(false);
-                            router.push('/dashboard/settings');
+                            router.push('/pages/settings');
                           }}
                         >
                           <Settings size={16} className="mr-3 text-gray-500" />

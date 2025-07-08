@@ -4,8 +4,8 @@ import { comparePassword, generateToken } from '@/lib/auth/jwt'
 import { z } from 'zod'
 
 const LoginSchema = z.object({
-  email: z.string().email('Email tidak valid'),
-  password: z.string().min(6, 'Password minimal 6 karakter'),
+  email: z.string().email('Format email tidak valid. Contoh: nama@email.com'),
+  password: z.string().min(6, 'Password harus memiliki minimal 6 karakter'),
 })
 
 export async function POST(request: NextRequest) {
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { error: 'Email atau password salah' },
+        { error: 'Email yang Anda masukkan tidak terdaftar dalam sistem kami. Silakan periksa kembali atau daftar akun baru.' },
         { status: 401 }
       )
     }
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     const isPasswordValid = await comparePassword(password, user.password)
     if (!isPasswordValid) {
       return NextResponse.json(
-        { error: 'Email atau password salah' },
+        { error: 'Password yang Anda masukkan salah. Silakan periksa kembali password Anda.' },
         { status: 401 }
       )
     }
